@@ -44,7 +44,6 @@ public class TestPerformance {
 	 *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 */
 	
-	@Ignore
 	@Test
 	public void highVolumeTrackLocation() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -59,7 +58,8 @@ public class TestPerformance {
 	    StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		for(User user : allUsers) {
-			tourGuideService.trackUserLocation(user);
+			gpsUtil.getUserLocation(user.getUserId());
+			//tourGuideService.trackUserLocation(user);
 		}
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
