@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -95,16 +97,30 @@ public class TourGuideService {
 	
 	public void trackMultipleUserLocation(List<User> users) {
 		int nbProcs = Runtime.getRuntime().availableProcessors();
-		ExecutorService executor = Executors.newFixedThreadPool(nbProcs);
-		executor.submit(() -> {
-			users.forEach(this::trackUserLocation);
-		});
+		ExecutorService executor = Executors.newFixedThreadPool(100);
+
+		ArrayList<Callable<VisitedLocation>> callableUsers = new ArrayList<Callable<VisitedLocation>>();
+		for(User user : users) {
+			
+			Callable<VisitedLocation> cuser = () -> {
+					return trackUserLocation(user);
+			};
+			callableUsers.add(cuser);
+		}
+		
+		List<Future<VisitedLocation>> futures = null; 
 		try {
-			executor.awaitTermination(users.size() * 11, TimeUnit.MILLISECONDS);
+			futures = executor.invokeAll(callableUsers);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		/*
+		for(Future<VisitedLocation> future : futures) {
+			System.out.println("Task done: " + future.isDone());
+		}
+		*/
+
 	}
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
