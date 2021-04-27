@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Ignore;
@@ -104,6 +105,27 @@ public class TestTourGuideService {
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		
 		List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
+		
+		tourGuideService.tracker.stopTracking();
+		
+		assertEquals(5, attractions.size());
+	}
+	
+	@Test
+	public void getClosestAttractions_shouldReturn5ClosestAttraction() {
+		GpsUtil gpsUtil = new GpsUtil();
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		InternalTestHelper.setInternalUserNumber(0);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		
+		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+		VisitedLocation userLocation = tourGuideService.trackUserLocation(user);
+		
+		Map<Double, Attraction> attractions = tourGuideService.getClosestAttractions(userLocation, 5);
+		
+		attractions.forEach((k, v) -> {
+			System.out.printf("Attraction: %s, distance: %f\n", v.attractionName, k.doubleValue());
+		});
 		
 		tourGuideService.tracker.stopTracking();
 		

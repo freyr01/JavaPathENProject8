@@ -5,9 +5,12 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -25,6 +28,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import tourGuide.dto.AttractionDTO;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
@@ -125,6 +129,63 @@ public class TourGuideService {
 		}
 		
 		return nearbyAttractions;
+	}
+	
+	/**
+	 * Get the closest attractions from actual user location
+	 * @param userLocation actual user location
+	 * @param amount Number of attraction to retrieve
+	 * @return SortedMap<Double, Attraction> a sorted map of attraction, first is the closest
+	 * @author Mathias Lauer
+	 * 27 avr. 2021
+	 */
+	public SortedMap<Double, Attraction> getClosestAttractions(VisitedLocation userLocation, int amount) {
+		SortedMap<Double, Attraction> map = new TreeMap<Double, Attraction>();
+		SortedMap<Double, Attraction> attractions = new TreeMap<Double, Attraction>();
+
+		//Create a sorted map of all attractions where the key is the distance between the user and the attraction
+		for(Attraction attraction : gpsUtil.getAttractions()) {
+			Double userDistance = rewardsService.getDistance(userLocation.location, new Location(attraction.latitude, attraction.longitude));
+			map.put(userDistance, attraction);
+		}
+		
+		//Extract the amount of attraction we want
+		Iterator<Double> it = map.keySet().iterator();
+		int i = 0;
+		while(i < amount && it.hasNext()) {
+			Double distance = it.next();
+			Attraction attraction = map.get(distance);
+			attractions.put(distance, attraction);
+			i++;
+		}
+
+		return attractions;
+	}
+	
+	/**
+	 * Create a list of attraction DTO representing <amount> attractions closest of the user
+	 * @param user
+	 * @param amount Number of closest attraction
+	 * @author Mathias Lauer
+	 * 27 avr. 2021
+	 */
+	public List<AttractionDTO> getClosestAttractionsDTO(User user, int amount)
+	{
+		SortedMap<Double, Attraction> attractions = getClosestAttractions(user.getLastVisitedLocation(), amount);
+		List<AttractionDTO> attractionsDtoList = new ArrayList<AttractionDTO>();
+		attractions.forEach((distance, attraction) -> {
+			AttractionDTO attractionDto = new AttractionDTO();
+			
+			attractionDto.setName(attraction.attractionName);
+			attractionDto.setLocation(new Location(attraction.latitude, attraction.longitude));
+			attractionDto.setUserLocation(user.getLastVisitedLocation().location);
+			attractionDto.setDistance(distance);
+			attractionDto.setRewardPoint(rewardsService.getRewardPoints(attraction, user));
+			
+			attractionsDtoList.add(attractionDto);
+		});
+		
+		return attractionsDtoList;
 	}
 	
 	private void addShutDownHook() {
