@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -88,6 +93,27 @@ public class TourGuideService {
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
 		return visitedLocation;
+	}
+	
+	public void trackMultipleUserLocation(List<User> users) {
+		int nbProcs = Runtime.getRuntime().availableProcessors();
+		ExecutorService executor = Executors.newFixedThreadPool(nbProcs * 2);
+
+		ArrayList<Callable<VisitedLocation>> callableUsers = new ArrayList<Callable<VisitedLocation>>();
+		for(User user : users) {
+			
+			Callable<VisitedLocation> cuser = () -> {
+					return trackUserLocation(user);
+			};
+			callableUsers.add(cuser);
+		}
+		
+		try {
+			executor.invokeAll(callableUsers);
+		} catch (InterruptedException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
