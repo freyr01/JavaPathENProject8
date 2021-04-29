@@ -45,11 +45,11 @@ public class TestPerformance {
 	 */
 	
 	@Test
-	public void highVolumeTrackLocation() {
+	public void highVolumeTrackLocation() throws InterruptedException {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
-		InternalTestHelper.setInternalUserNumber(10000);
+		InternalTestHelper.setInternalUserNumber(100000);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
 		List<User> allUsers = new ArrayList<>();
@@ -57,7 +57,9 @@ public class TestPerformance {
 		
 	    StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		tourGuideService.trackMultipleUserLocation(allUsers);
+		allUsers.forEach((user) -> tourGuideService.trackUserLocation(user));
+		tourGuideService.getExecutorService().shutdown();
+		tourGuideService.getExecutorService().awaitTermination(10, TimeUnit.MINUTES);
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
 

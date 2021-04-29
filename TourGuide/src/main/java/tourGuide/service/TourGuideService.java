@@ -13,6 +13,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -44,6 +45,8 @@ public class TourGuideService {
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
+	private ExecutorService executor = Executors.newFixedThreadPool(200);
+	
 	
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
@@ -64,9 +67,15 @@ public class TourGuideService {
 	}
 	
 	public VisitedLocation getUserLocation(User user) {
-		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
-			user.getLastVisitedLocation() :
-			trackUserLocation(user);
+		VisitedLocation visitedLocation = null;
+		try {
+			visitedLocation = (user.getVisitedLocations().size() > 0) ?
+				user.getLastVisitedLocation() :
+				trackUserLocation(user).get();
+		} catch (InterruptedException | ExecutionException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		}
 		return visitedLocation;
 	}
 	
@@ -92,32 +101,19 @@ public class TourGuideService {
 		return providers;
 	}
 	
-	public VisitedLocation trackUserLocation(User user) {
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-		user.addToVisitedLocations(visitedLocation);
-		rewardsService.calculateRewards(user);
-		return visitedLocation;
+	public Future<VisitedLocation> trackUserLocation(User user) {
+		Future<VisitedLocation> future = executor.submit(() -> {
+			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+			user.addToVisitedLocations(visitedLocation);
+			rewardsService.calculateRewards(user);
+			return visitedLocation;
+		});
+		
+		return future;
 	}
 	
-	public void trackMultipleUserLocation(List<User> users) {
-		int nbProcs = Runtime.getRuntime().availableProcessors();
-		ExecutorService executor = Executors.newFixedThreadPool(nbProcs * 2);
-
-		ArrayList<Callable<VisitedLocation>> callableUsers = new ArrayList<Callable<VisitedLocation>>();
-		for(User user : users) {
-			
-			Callable<VisitedLocation> cuser = () -> {
-					return trackUserLocation(user);
-			};
-			callableUsers.add(cuser);
-		}
-		
-		try {
-			executor.invokeAll(callableUsers);
-		} catch (InterruptedException e) {
-			logger.error(e.getMessage());
-			e.printStackTrace();
-		}
+	public ExecutorService getExecutorService() {
+		return executor;
 	}
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
