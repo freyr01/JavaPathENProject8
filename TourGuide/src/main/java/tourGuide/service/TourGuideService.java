@@ -12,17 +12,15 @@ import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -45,12 +43,13 @@ public class TourGuideService {
 	private final TripPricer tripPricer = new TripPricer();
 	public final Tracker tracker;
 	boolean testMode = true;
-	private ExecutorService executor = Executors.newFixedThreadPool(200);
+	private ExecutorService executorService;
 	
 	
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
+	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, @Autowired ExecutorService p_executorService) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
+		this.executorService = p_executorService;
 		
 		if(testMode) {
 			logger.info("TestMode enabled");
@@ -102,7 +101,7 @@ public class TourGuideService {
 	}
 	
 	public Future<VisitedLocation> trackUserLocation(User user) {
-		Future<VisitedLocation> future = executor.submit(() -> {
+		Future<VisitedLocation> future = executorService.submit(() -> {
 			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 			user.addToVisitedLocations(visitedLocation);
 			rewardsService.calculateRewards(user);
@@ -113,7 +112,7 @@ public class TourGuideService {
 	}
 	
 	public ExecutorService getExecutorService() {
-		return executor;
+		return executorService;
 	}
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {

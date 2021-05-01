@@ -1,5 +1,8 @@
 package tourGuide;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,6 +26,11 @@ public class TourGuideModule {
 	@Bean
 	public RewardCentral getRewardCentral() {
 		return new RewardCentral();
+	}
+	
+	@Bean
+	public ExecutorService getExecutorService() {
+		return Executors.newFixedThreadPool(200);
 	}
 	
 }
