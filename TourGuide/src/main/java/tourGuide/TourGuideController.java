@@ -2,22 +2,30 @@ package tourGuide;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jsoniter.output.JsonStream;
 
-import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
-import tourGuide.dto.AttractionDTO;
+import tourGuide.dto.UserPreferencesDTO;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tripPricer.Provider;
 
 @RestController
 public class TourGuideController {
+	
+	private Logger logger = LoggerFactory.getLogger(TourGuideController.class);
 
 	@Autowired
 	TourGuideService tourGuideService;
@@ -85,6 +93,49 @@ public class TourGuideController {
     
     private User getUser(String userName) {
     	return tourGuideService.getUser(userName);
+    }
+    
+    @GetMapping("/preferences/{userName}")
+    /**
+     * Return the user preferences as Json object as body of the response
+     * @param userName
+     * @return UserPreferencesDTO object
+     * @author Mathias Lauer
+     * 4 mai 2021
+     */
+    public UserPreferencesDTO getUserPreferences(@PathVariable("userName") String userName) {
+    	User user = getUser(userName);
+    	if(user == null) {
+    		logger.error("Requested user not found: " + userName);
+    		return null;
+    	}
+    	
+    	UserPreferencesDTO dto = new UserPreferencesDTO();
+    	user.getUserPreferences().mapTo(dto);
+    	
+    	return dto;
+    }
+    
+    @PostMapping("/preferences/{userName}")
+    /**
+     * Deserialize an UserPreferencesDTO to update user preferences
+     * @param userName
+     * @param userPreferencesDTO in Json format as body of the request 
+     * @return UserPreferencesDTO updated if successful
+     * @author Mathias Lauer
+     * 4 mai 2021
+     */
+    public UserPreferencesDTO postUserPreferences(@PathVariable("userName") String userName,
+    												@RequestBody UserPreferencesDTO userPreferencesDTO) {
+    	User user = getUser(userName);
+    	if(user == null) {
+    		logger.error("Requested user not found: " + userName);
+    		return null;
+    	}
+    	
+    	user.getUserPreferences().mapFrom(userPreferencesDTO);
+    	
+    	return getUserPreferences(userName);
     }
    
 

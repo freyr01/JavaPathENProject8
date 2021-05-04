@@ -49,10 +49,10 @@ public class TestPerformance {
 	@Test
 	public void highVolumeTrackLocation() throws InterruptedException {
 		GpsUtil gpsUtil = new GpsUtil();
-		ExecutorService executorService = Executors.newFixedThreadPool(50);
+		ExecutorService executorService = Executors.newFixedThreadPool(10000);
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
-		InternalTestHelper.setInternalUserNumber(1000);
+		InternalTestHelper.setInternalUserNumber(100);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 
 		List<User> allUsers = new ArrayList<>();
@@ -62,7 +62,7 @@ public class TestPerformance {
 		stopWatch.start();
 		allUsers.forEach((user) -> tourGuideService.trackUserLocation(user));
 		tourGuideService.getExecutorService().shutdown();
-		tourGuideService.getExecutorService().awaitTermination(10, TimeUnit.MINUTES);
+		tourGuideService.getExecutorService().awaitTermination(16, TimeUnit.MINUTES);
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
 
@@ -77,7 +77,7 @@ public class TestPerformance {
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
-		InternalTestHelper.setInternalUserNumber(100000);
+		InternalTestHelper.setInternalUserNumber(100);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
@@ -90,7 +90,7 @@ public class TestPerformance {
 	    allUsers.forEach(u -> rewardsService.calculateRewards(u));
 	    
 	    executorService.shutdown();
-	    executorService.awaitTermination(15, TimeUnit.MINUTES);
+	    executorService.awaitTermination(21, TimeUnit.MINUTES);
 	    
 		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);
