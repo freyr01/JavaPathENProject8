@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.junit.Ignore;
@@ -27,9 +28,10 @@ public class TestTourGuideService {
 	@Test
 	public void getUserLocation() throws InterruptedException, ExecutionException {
 		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		ExecutorService executorService = Executors.newFixedThreadPool(1000);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, Executors.newFixedThreadPool(1000));
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user).get();
@@ -40,9 +42,10 @@ public class TestTourGuideService {
 	@Test
 	public void addUser() {
 		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		ExecutorService executorService = Executors.newFixedThreadPool(1000);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, Executors.newFixedThreadPool(1000));
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
@@ -62,9 +65,10 @@ public class TestTourGuideService {
 	@Test
 	public void getAllUsers() {
 		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		ExecutorService executorService = Executors.newFixedThreadPool(1000);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, Executors.newFixedThreadPool(1000));
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
@@ -83,9 +87,10 @@ public class TestTourGuideService {
 	@Test
 	public void trackUser() throws InterruptedException, ExecutionException {
 		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		ExecutorService executorService = Executors.newFixedThreadPool(1000);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, Executors.newFixedThreadPool(1000));
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user).get();
@@ -99,9 +104,10 @@ public class TestTourGuideService {
 	@Test
 	public void getNearbyAttractions() throws InterruptedException, ExecutionException {
 		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		ExecutorService executorService = Executors.newFixedThreadPool(1000);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, Executors.newFixedThreadPool(1000));
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user).get();
@@ -116,9 +122,10 @@ public class TestTourGuideService {
 	@Test
 	public void getClosestAttractions_shouldReturn5ClosestAttraction() throws InterruptedException, ExecutionException {
 		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		ExecutorService executorService = Executors.newFixedThreadPool(1000);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, Executors.newFixedThreadPool(1000));
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		VisitedLocation userLocation = tourGuideService.trackUserLocation(user).get();
@@ -136,9 +143,10 @@ public class TestTourGuideService {
 	
 	public void getTripDeals() {
 		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		ExecutorService executorService = Executors.newFixedThreadPool(1000);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, Executors.newFixedThreadPool(1000));
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 

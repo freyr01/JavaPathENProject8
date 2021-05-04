@@ -49,10 +49,11 @@ public class TestPerformance {
 	@Test
 	public void highVolumeTrackLocation() throws InterruptedException {
 		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		ExecutorService executorService = Executors.newFixedThreadPool(50);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
 		InternalTestHelper.setInternalUserNumber(1000);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, Executors.newFixedThreadPool(1000));
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
@@ -70,15 +71,16 @@ public class TestPerformance {
 	}
 	
 	@Test
-	public void highVolumeGetRewards() {
+	public void highVolumeGetRewards() throws InterruptedException {
 		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		ExecutorService executorService = Executors.newFixedThreadPool(10000);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
-		InternalTestHelper.setInternalUserNumber(100);
+		InternalTestHelper.setInternalUserNumber(100000);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, Executors.newFixedThreadPool(1000));
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
 		
 	    Attraction attraction = gpsUtil.getAttractions().get(0);
 		List<User> allUsers = new ArrayList<>();
@@ -86,6 +88,9 @@ public class TestPerformance {
 		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 	     
 	    allUsers.forEach(u -> rewardsService.calculateRewards(u));
+	    
+	    executorService.shutdown();
+	    executorService.awaitTermination(15, TimeUnit.MINUTES);
 	    
 		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);

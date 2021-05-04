@@ -104,9 +104,11 @@ public class TourGuideService {
 		Future<VisitedLocation> future = executorService.submit(() -> {
 			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 			user.addToVisitedLocations(visitedLocation);
-			rewardsService.calculateRewards(user);
+			
 			return visitedLocation;
 		});
+		
+		rewardsService.calculateRewards(user);
 		
 		return future;
 	}
