@@ -8,10 +8,15 @@ import java.util.UUID;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gpsUtil.location.VisitedLocation;
+import tourGuide.service.TourGuideService;
 import tripPricer.Provider;
 
 public class User {
+	private Logger logger = LoggerFactory.getLogger(User.class);
 	private final UUID userId;
 	private final String userName;
 	private String phoneNumber;
@@ -61,6 +66,7 @@ public class User {
 	}
 	
 	public void addToVisitedLocations(VisitedLocation visitedLocation) {
+		logger.debug("Add visited location: " + visitedLocation);
 		visitedLocations.add(visitedLocation);
 	}
 	

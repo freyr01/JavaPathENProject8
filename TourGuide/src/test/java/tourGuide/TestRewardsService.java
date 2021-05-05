@@ -5,8 +5,10 @@ import static org.junit.Assert.*;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Ignore;
@@ -25,7 +27,7 @@ import tourGuide.user.UserReward;
 public class TestRewardsService {
 
 	@Test
-	public void userGetRewards() throws InterruptedException {
+	public void userGetRewards() throws InterruptedException, ExecutionException {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
@@ -35,7 +37,13 @@ public class TestRewardsService {
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
-		tourGuideService.trackUserLocation(user);
+		Future<VisitedLocation> visitedLocation = tourGuideService.trackUserLocation(user);
+		
+		
+		ExecutorService tourGuideExecutorService = tourGuideService.getExecutorService();
+		tourGuideExecutorService.shutdown();
+		tourGuideExecutorService.awaitTermination(10, TimeUnit.SECONDS);
+		
 		
 		ExecutorService executorService = rewardsService.getExecutorService();
 		executorService.shutdown();
@@ -43,6 +51,7 @@ public class TestRewardsService {
 		
 		List<UserReward> userRewards = user.getUserRewards();
 		tourGuideService.tracker.stopTracking();
+		assertTrue(visitedLocation.isDone());
 		assertTrue(userRewards.size() == 1);
 	}
 	

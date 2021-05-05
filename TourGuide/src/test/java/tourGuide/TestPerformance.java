@@ -62,9 +62,10 @@ public class TestPerformance {
 		
 		//Launch asynchronous track location for all users
 		allUsers.forEach((user) -> tourGuideService.trackUserLocation(user));
-
-		//Ask for users locations, this will automatically wait the end of all asynchronous track location tasks 
-		allUsers.forEach((user) -> tourGuideService.getUserLocation(user));
+		
+	    ExecutorService tourGuideExecutorService = tourGuideService.getExecutorService();
+	    tourGuideExecutorService.shutdown();
+	    tourGuideExecutorService.awaitTermination(16, TimeUnit.MINUTES);
 		
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
@@ -79,7 +80,7 @@ public class TestPerformance {
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
-		InternalTestHelper.setInternalUserNumber(100);
+		InternalTestHelper.setInternalUserNumber(10);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);

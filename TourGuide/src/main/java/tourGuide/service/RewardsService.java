@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -16,6 +18,9 @@ import tourGuide.user.UserReward;
 
 @Service
 public class RewardsService {
+	
+	private Logger logger = LoggerFactory.getLogger(RewardsService.class);
+	
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
 	// proximity in miles
@@ -47,18 +52,19 @@ public class RewardsService {
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
 
-		
-			for(VisitedLocation visitedLocation : userLocations) {
-				for(Attraction attraction : attractions) {
-					if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-						if(nearAttraction(visitedLocation, attraction)) {
-							executorService.submit(() -> {
-								user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
-							});
-						}
+		logger.debug("Entering calculate rewards for user: " + user);
+		for(VisitedLocation visitedLocation : userLocations) {
+			for(Attraction attraction : attractions) {
+				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+					if(nearAttraction(visitedLocation, attraction)) {
+						logger.debug("Creating parallel task to retrieve user rewards for attraction: " + attraction.attractionName);
+						executorService.submit(() -> {
+							user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
+						});
 					}
 				}
 			}
+		}
 		
 	}
 	

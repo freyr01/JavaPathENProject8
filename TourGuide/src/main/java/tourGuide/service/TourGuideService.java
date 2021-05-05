@@ -66,9 +66,15 @@ public class TourGuideService {
 	public VisitedLocation getUserLocation(User user) {
 		VisitedLocation visitedLocation = null;
 		try {
-			visitedLocation = (user.getVisitedLocations().size() > 0) ?
-				user.getLastVisitedLocation() :
-				trackUserLocation(user).get();
+			if(user.getVisitedLocations().size() > 0) {
+				visitedLocation = user.getLastVisitedLocation();
+				logger.debug("Call getUserLocation for user: " + user + " returning last known location");
+			} 
+			else {
+				logger.debug("Call getUserLocation for user: " + user + " getting current location...");
+				visitedLocation = trackUserLocation(user).get();
+				
+			}
 		} catch (InterruptedException | ExecutionException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
@@ -99,15 +105,15 @@ public class TourGuideService {
 	}
 	
 	public Future<VisitedLocation> trackUserLocation(User user) {
+		logger.debug("Creating parallel task getUserLocation for user: " + user);
 		Future<VisitedLocation> future = executorService.submit(() -> {
 			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+			logger.debug("Getting userLocation: " + visitedLocation);
 			user.addToVisitedLocations(visitedLocation);
-			
+			rewardsService.calculateRewards(user);
 			return visitedLocation;
 		});
-		
-		rewardsService.calculateRewards(user);
-		
+
 		return future;
 	}
 	
