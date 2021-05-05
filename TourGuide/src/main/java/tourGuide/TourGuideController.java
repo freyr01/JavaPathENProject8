@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -95,6 +96,7 @@ public class TourGuideController {
     	return tourGuideService.getUser(userName);
     }
     
+    //CRUD implementation for userPreferences management
     @GetMapping("/preferences/{userName}")
     /**
      * Return the user preferences as Json object as body of the response
@@ -111,12 +113,12 @@ public class TourGuideController {
     	}
     	
     	UserPreferencesDTO dto = new UserPreferencesDTO();
-    	user.getUserPreferences().mapTo(dto);
+    	user.getUserPreferences().mapTo(dto, userName);
     	
     	return dto;
     }
     
-    @PostMapping("/preferences/{userName}")
+    @PutMapping("/preferences")
     /**
      * Deserialize an UserPreferencesDTO to update user preferences
      * @param userName
@@ -125,17 +127,16 @@ public class TourGuideController {
      * @author Mathias Lauer
      * 4 mai 2021
      */
-    public UserPreferencesDTO postUserPreferences(@PathVariable("userName") String userName,
-    												@RequestBody UserPreferencesDTO userPreferencesDTO) {
-    	User user = getUser(userName);
+    public UserPreferencesDTO putUserPreferences(@RequestBody UserPreferencesDTO userPreferencesDTO) {
+    	User user = getUser(userPreferencesDTO.getUserName());
     	if(user == null) {
-    		logger.error("Requested user not found: " + userName);
+    		logger.error("Requested user not found: " + userPreferencesDTO.getUserName());
     		return null;
     	}
     	
     	user.getUserPreferences().mapFrom(userPreferencesDTO);
     	
-    	return getUserPreferences(userName);
+    	return getUserPreferences(userPreferencesDTO.getUserName());
     }
    
 

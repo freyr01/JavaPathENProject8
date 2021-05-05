@@ -2,6 +2,7 @@ package tourGuide.dto;
 
 public class UserPreferencesDTO {
 	
+	private String userName;
 	private Integer attractionProximity;
 	private String currency;
 	private Double lowerPricePoint;
@@ -58,6 +59,12 @@ public class UserPreferencesDTO {
 	}
 	public void setNumberOfChildren(Integer numberOfChildren) {
 		this.numberOfChildren = numberOfChildren;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 

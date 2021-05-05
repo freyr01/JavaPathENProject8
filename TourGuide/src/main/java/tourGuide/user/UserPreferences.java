@@ -92,7 +92,8 @@ public class UserPreferences {
 	 * @author Mathias Lauer
 	 * 4 mai 2021
 	 */
-	public void mapTo(UserPreferencesDTO dto) {
+	public void mapTo(UserPreferencesDTO dto, String userName) {
+		dto.setUserName(userName);
 		dto.setCurrency(currency.getCurrencyCode());
 		dto.setAttractionProximity(attractionProximity);
 		dto.setHighPricePoint(highPricePoint.getNumber().doubleValue());
@@ -104,7 +105,7 @@ public class UserPreferences {
 	}
 	
 	/**
-	 * Set this object attributes based on the DTO object provided
+	 * Map userPreferences attributes based on the DTO object provided
 	 * @param dto UserPreferencesDTO containing data to map
 	 * @author Mathias Lauer
 	 * 4 mai 2021
