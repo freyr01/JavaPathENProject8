@@ -20,17 +20,12 @@ public class TourGuideModule {
 	
 	@Bean
 	public RewardsService getRewardsService() {
-		return new RewardsService(getGpsUtil(), getRewardCentral(), getExecutorService());
+		return new RewardsService(getGpsUtil(), getRewardCentral());
 	}
 	
 	@Bean
 	public RewardCentral getRewardCentral() {
 		return new RewardCentral();
-	}
-	
-	@Bean
-	public ExecutorService getExecutorService() {
-		return Executors.newFixedThreadPool(200);
 	}
 	
 }

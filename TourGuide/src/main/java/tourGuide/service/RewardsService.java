@@ -2,6 +2,7 @@ package tourGuide.service;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.stereotype.Service;
 
@@ -23,10 +24,13 @@ public class RewardsService {
 	private int attractionProximityRange = 200;
 	private final GpsUtil gpsUtil;
 	private final RewardCentral rewardsCentral;
-	private final ExecutorService executorService;
+	private final ExecutorService executorService = Executors.newFixedThreadPool(10000);
 	
-	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral, ExecutorService p_executorService) {
-		this.executorService = p_executorService;
+	public ExecutorService getExecutorService() {
+		return executorService;
+	}
+
+	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsCentral = rewardCentral;
 	}

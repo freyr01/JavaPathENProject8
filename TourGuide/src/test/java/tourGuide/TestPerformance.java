@@ -49,11 +49,10 @@ public class TestPerformance {
 	@Test
 	public void highVolumeTrackLocation() throws InterruptedException {
 		GpsUtil gpsUtil = new GpsUtil();
-		ExecutorService executorService = Executors.newFixedThreadPool(10000);
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
 		InternalTestHelper.setInternalUserNumber(1000);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
@@ -77,14 +76,13 @@ public class TestPerformance {
 	@Test
 	public void highVolumeGetRewards() throws InterruptedException {
 		GpsUtil gpsUtil = new GpsUtil();
-		ExecutorService executorService = Executors.newFixedThreadPool(10000);
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral(), executorService);
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
 		InternalTestHelper.setInternalUserNumber(100);
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService, executorService);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
 	    Attraction attraction = gpsUtil.getAttractions().get(0);
 		List<User> allUsers = new ArrayList<>();
@@ -93,6 +91,7 @@ public class TestPerformance {
 	     
 	    allUsers.forEach(u -> rewardsService.calculateRewards(u));
 	    
+	    ExecutorService executorService = rewardsService.getExecutorService();
 	    executorService.shutdown();
 	    executorService.awaitTermination(21, TimeUnit.MINUTES);
 	    
