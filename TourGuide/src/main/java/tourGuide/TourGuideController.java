@@ -67,15 +67,7 @@ public class TourGuideController {
      * 10 mai 2021
      */
     public String getAllCurrentLocations() {
-    	List<UserLastLocationDTO> listLocation = new ArrayList<UserLastLocationDTO>();
-    	for(User user : tourGuideService.getAllUsers()) {
-    		UserLastLocationDTO lastLocation = new UserLastLocationDTO();
-    		lastLocation.setUserId(user.getUserId().toString());
-    		lastLocation.setLastLocation(user.getLastVisitedLocation().location);
-    		listLocation.add(lastLocation);
-    	}
-    	
-    	return JsonStream.serialize(listLocation);
+    	return JsonStream.serialize(tourGuideService.getAllUserLastVisitedLocation());
     }
     
     @RequestMapping("/getTripDeals")

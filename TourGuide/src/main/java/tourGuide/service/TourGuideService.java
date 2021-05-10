@@ -28,6 +28,7 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.dto.AttractionDTO;
+import tourGuide.dto.UserLastLocationDTO;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
@@ -161,6 +162,24 @@ public class TourGuideService {
 		}
 
 		return attractions;
+	}
+	
+	/**
+	 * Create a list of all user last visited location
+	 * @return List<UserLastLocationDTO>
+	 * @author Mathias Lauer
+	 * 10 mai 2021
+	 */
+	public List<UserLastLocationDTO> getAllUserLastVisitedLocation(){
+    	List<UserLastLocationDTO> listLocation = new ArrayList<UserLastLocationDTO>();
+    	for(User user : getAllUsers()) {
+    		UserLastLocationDTO lastLocation = new UserLastLocationDTO();
+    		lastLocation.setUserId(user.getUserId().toString());
+    		lastLocation.setLastLocation(user.getLastVisitedLocation().location);
+    		listLocation.add(lastLocation);
+    	}
+    	
+    	return listLocation;
 	}
 	
 	/**

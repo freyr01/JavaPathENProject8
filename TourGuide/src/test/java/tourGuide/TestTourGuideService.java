@@ -3,6 +3,7 @@ package tourGuide;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourGuide.dto.UserLastLocationDTO;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -96,26 +98,24 @@ public class TestTourGuideService {
 		assertEquals(user.getUserId(), visitedLocation.userId);
 	}
 	
-	@Ignore // Not yet implemented
 	@Test
-	public void getNearbyAttractions() throws InterruptedException, ExecutionException {
+	public void getAllUserVisitedLocationTest_shouldReturnListOfDto() throws InterruptedException, ExecutionException {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		InternalTestHelper.setInternalUserNumber(0);
+		InternalTestHelper.setInternalUserNumber(10);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-		
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user).get();
-		
-		List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
 		
 		tourGuideService.tracker.stopTracking();
 		
-		assertEquals(5, attractions.size());
+		List<UserLastLocationDTO> usersLastVisitedLocation = tourGuideService.getAllUserLastVisitedLocation();
+		
+		assertEquals(10, usersLastVisitedLocation.size());
+		
+		usersLastVisitedLocation.forEach((userLastLocation) -> assertTrue(userLastLocation.getLastLocation() != null));
 	}
 	
 	@Test
-	public void getClosestAttractions_shouldReturn5ClosestAttraction() throws InterruptedException, ExecutionException {
+	public void getClosestAttractions_shouldReturn5ClosestAttractionSortedByProximity() throws InterruptedException, ExecutionException {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		InternalTestHelper.setInternalUserNumber(0);
@@ -126,13 +126,19 @@ public class TestTourGuideService {
 		
 		Map<Double, Attraction> attractions = tourGuideService.getClosestAttractions(userLocation, 5);
 		
-		attractions.forEach((k, v) -> {
-			System.out.printf("Attraction: %s, distance: %f\n", v.attractionName, k.doubleValue());
-		});
-		
 		tourGuideService.tracker.stopTracking();
 		
+		// List assert
 		assertEquals(5, attractions.size());
+		
+		// Sort assert
+		Iterator<Double> it = attractions.keySet().iterator();
+		while(it.hasNext()) {
+			Double value = it.next();
+			if(it.hasNext()) {
+				assertTrue(value < it.next());
+			}
+		}
 	}
 	
 	public void getTripDeals() {
