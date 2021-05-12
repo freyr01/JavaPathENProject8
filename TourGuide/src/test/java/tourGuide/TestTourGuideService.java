@@ -1,6 +1,7 @@
 package tourGuide;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourGuide.dto.AttractionDTO;
 import tourGuide.dto.UserLastLocationDTO;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
@@ -139,6 +141,29 @@ public class TestTourGuideService {
 				assertTrue(value < it.next());
 			}
 		}
+	}
+	
+	@Test
+	public void mapClosestAttractionsToDTOTest_shouldReturnCorreclyFilledDTOlist() throws InterruptedException, ExecutionException {
+		GpsUtil gpsUtil = new GpsUtil();
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		InternalTestHelper.setInternalUserNumber(0);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		
+		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
+		tourGuideService.trackUserLocation(user).get();
+		
+		List<AttractionDTO> attractions = tourGuideService.mapClosestAttractionsToDTO(user, 5);
+		
+		tourGuideService.tracker.stopTracking();
+		
+		assertEquals(5, attractions.size());
+		assertNotNull(attractions.get(0).getDistance());
+		assertNotNull(attractions.get(0).getLocation());
+		assertNotNull(attractions.get(0).getName());
+		assertNotNull(attractions.get(0).getRewardPoint());
+		assertNotNull(attractions.get(0).getUserLocation());
+		
 	}
 	
 	public void getTripDeals() {

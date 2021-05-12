@@ -164,32 +164,15 @@ public class TourGuideService {
 		return attractions;
 	}
 	
-	/**
-	 * Create a list of all user last visited location
-	 * @return List<UserLastLocationDTO>
-	 * @author Mathias Lauer
-	 * 10 mai 2021
-	 */
-	public List<UserLastLocationDTO> getAllUserLastVisitedLocation(){
-    	List<UserLastLocationDTO> listLocation = new ArrayList<UserLastLocationDTO>();
-    	for(User user : getAllUsers()) {
-    		UserLastLocationDTO lastLocation = new UserLastLocationDTO();
-    		lastLocation.setUserId(user.getUserId().toString());
-    		lastLocation.setLastLocation(user.getLastVisitedLocation().location);
-    		listLocation.add(lastLocation);
-    	}
-    	
-    	return listLocation;
-	}
 	
 	/**
-	 * Create a list of attraction DTO representing <amount> attractions closest of the user
+	 * Create a list of attraction DTO representing <amount> attractions closest of the user based on user last location registered
 	 * @param user
 	 * @param amount Number of closest attraction
 	 * @author Mathias Lauer
 	 * 27 avr. 2021
 	 */
-	public List<AttractionDTO> getClosestAttractionsDTO(User user, int amount)
+	public List<AttractionDTO> mapClosestAttractionsToDTO(User user, int amount)
 	{
 		SortedMap<Double, Attraction> attractions = getClosestAttractions(user.getLastVisitedLocation(), amount);
 		List<AttractionDTO> attractionsDtoList = new ArrayList<AttractionDTO>();
@@ -206,6 +189,24 @@ public class TourGuideService {
 		});
 		
 		return attractionsDtoList;
+	}
+	
+	/**
+	 * Create a list of all user last visited location
+	 * @return List<UserLastLocationDTO>
+	 * @author Mathias Lauer
+	 * 10 mai 2021
+	 */
+	public List<UserLastLocationDTO> getAllUserLastVisitedLocation(){
+    	List<UserLastLocationDTO> listLocation = new ArrayList<UserLastLocationDTO>();
+    	for(User user : getAllUsers()) {
+    		UserLastLocationDTO lastLocation = new UserLastLocationDTO();
+    		lastLocation.setUserId(user.getUserId().toString());
+    		lastLocation.setLastLocation(user.getLastVisitedLocation().location);
+    		listLocation.add(lastLocation);
+    	}
+    	
+    	return listLocation;
 	}
 	
 	private void addShutDownHook() {

@@ -52,7 +52,7 @@ public class TourGuideController {
      * 10 mai 2021
      */
     public String getNearbyAttractions(@RequestParam String userName) {
-    	return JsonStream.serialize(tourGuideService.getClosestAttractionsDTO(getUser(userName), 5));
+    	return JsonStream.serialize(tourGuideService.mapClosestAttractionsToDTO(getUser(userName), 5));
     }
     
     @RequestMapping("/getRewards") 
