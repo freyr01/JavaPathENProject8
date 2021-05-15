@@ -7,22 +7,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jsoniter.output.JsonStream;
-import java.util.ArrayList;
 
 import gpsUtil.location.VisitedLocation;
-import tourGuide.dto.UserLastLocationDTO;
 import tourGuide.dto.UserPreferencesDTO;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
-import tourGuide.user.UserPreferences;
 import tripPricer.Provider;
 
 @RestController
@@ -33,18 +28,18 @@ public class TourGuideController {
 	@Autowired
 	TourGuideService tourGuideService;
 	
-    @RequestMapping("/")
+    @GetMapping("/")
     public String index() {
         return "Greetings from TourGuide!";
     }
     
-    @RequestMapping("/getLocation") 
+    @GetMapping("/getLocation") 
     public String getLocation(@RequestParam String userName) {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
 
-    @RequestMapping("/getNearbyAttractions") 
+    @GetMapping("/getNearbyAttractions") 
     /**
      * Return 5 closest attractions based on last visited location of the user as Json
      * @param userName
@@ -55,12 +50,12 @@ public class TourGuideController {
     	return JsonStream.serialize(tourGuideService.mapClosestAttractionsToDTO(getUser(userName), 5));
     }
     
-    @RequestMapping("/getRewards") 
+    @GetMapping("/getRewards") 
     public String getRewards(@RequestParam String userName) {
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
     }
     
-    @RequestMapping("/getAllCurrentLocations")
+    @GetMapping("/getAllCurrentLocations")
     /**
      * Return all users last location registed as Json
      * @author Mathias Lauer
@@ -70,7 +65,7 @@ public class TourGuideController {
     	return JsonStream.serialize(tourGuideService.getAllUserLastVisitedLocation());
     }
     
-    @RequestMapping("/getTripDeals")
+    @GetMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
     	return JsonStream.serialize(providers);
