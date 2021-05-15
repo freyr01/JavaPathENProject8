@@ -15,6 +15,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: "jacoco"
 
 
+
 bootJar {
     baseName = 'tourGuide'
     version =  '1.0.0'
@@ -42,6 +43,11 @@ dependencies {
     
     testCompile("junit:junit")
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.6.RELEASE'
+    // https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	
 }
 
 
