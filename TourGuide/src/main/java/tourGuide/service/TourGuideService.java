@@ -121,17 +121,6 @@ public class TourGuideService {
 	public ExecutorService getExecutorService() {
 		return executorService;
 	}
-
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for(Attraction attraction : gpsUtil.getAttractions()) {
-			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
-			}
-		}
-		
-		return nearbyAttractions;
-	}
 	
 	/**
 	 * Get the closest attractions from actual user location

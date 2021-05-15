@@ -1,10 +1,12 @@
 package tourGuide;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +20,28 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tourGuide.dto.UserPreferencesDTO;
+import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.TourGuideService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TestUserPreferences {
+public class TestTourGuideController {
 	
 	@Autowired
 	private MockMvc mockMvc;
 	
 	@Autowired
 	TourGuideService service;
+	
+	@Test
+	public void testGetAllUserCurrentLocations_shouldReturnUUIDandLocationList() throws Exception {
+		mockMvc.perform(get("/getAllCurrentLocations"))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$[0].userId", notNullValue()))
+		.andExpect(jsonPath("$[0].lastLocation", notNullValue()))
+		;
+	}
 	
 	@Test
 	public void testGetUserPreferences_shouldReturnUserPreferencesAsJson() throws Exception {
@@ -78,16 +90,4 @@ public class TestUserPreferences {
 				.andExpect(jsonPath("$.numberOfAdults", is(2)))
 				.andExpect(jsonPath("$.numberOfChildren", is(3)));
 	}
-	
-	/*
-	private String userName;
-	private Integer attractionProximity;
-	private String currency;
-	private Double lowerPricePoint;
-	private Double highPricePoint;
-	private Integer tripDuration;
-	private Integer ticketQuantity;
-	private Integer numberOfAdults;
-	private Integer numberOfChildren;
-*/
 }
