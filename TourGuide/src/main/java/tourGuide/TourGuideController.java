@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
+import io.swagger.annotations.ApiOperation;
 import tourGuide.dto.UserPreferencesDTO;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -28,17 +29,20 @@ public class TourGuideController {
 	@Autowired
 	TourGuideService tourGuideService;
 	
+	@ApiOperation(value = "Root page")
     @GetMapping("/")
     public String index() {
         return "Greetings from TourGuide!";
     }
     
+	@ApiOperation(value = "Get the location of a specific user")
     @GetMapping("/getLocation") 
     public String getLocation(@RequestParam String userName) {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
 
+	@ApiOperation(value = "Get the five closest attractions from the user current location")
     @GetMapping("/getNearbyAttractions") 
     /**
      * Return 5 closest attractions based on last visited location of the user as Json
@@ -50,11 +54,13 @@ public class TourGuideController {
     	return JsonStream.serialize(tourGuideService.mapClosestAttractionsToDTO(getUser(userName), 5));
     }
     
+	@ApiOperation(value = "Get the rewards list of a specific user")
     @GetMapping("/getRewards") 
     public String getRewards(@RequestParam String userName) {
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
     }
     
+	@ApiOperation(value = "Get all users current location")
     @GetMapping("/getAllCurrentLocations")
     /**
      * Return all users last location registed as Json
@@ -65,6 +71,7 @@ public class TourGuideController {
     	return JsonStream.serialize(tourGuideService.getAllUserLastVisitedLocation());
     }
     
+	@ApiOperation(value = "Get the list of trip deals of a specific user")
     @GetMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
@@ -76,6 +83,7 @@ public class TourGuideController {
     }
     
     //CRUD implementation for userPreferences management
+    @ApiOperation(value = "Get the user preferences")
     @GetMapping("/preferences/{userName}")
     /**
      * Return the user preferences as Json object as body of the response
@@ -97,6 +105,7 @@ public class TourGuideController {
     	return dto;
     }
     
+    @ApiOperation(value = "Set the user preferences")
     @PutMapping("/preferences")
     /**
      * Deserialize an UserPreferencesDTO to update user preferences
