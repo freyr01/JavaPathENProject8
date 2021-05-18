@@ -6,9 +6,9 @@ package TourGuildeGpsUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class GpsUtilController {
+public class GpsUtilTest {
     @Test public void testSomeLibraryMethod() {
-        GpsUtilController controller = new GpsUtilController();
+        GpsUtilTest controller = new GpsUtilTest();
         
     }
 }
