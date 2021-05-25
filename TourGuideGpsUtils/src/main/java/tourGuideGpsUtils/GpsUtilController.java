@@ -1,4 +1,4 @@
-package TourGuildeGpsUtils;
+package tourGuideGpsUtils;
 
 public class GpsUtilController {
 
