@@ -51,10 +51,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/io.github.openfeign/feign-gson
 	implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.0'
 	
-	
-	
-	
-	
 }
 
 

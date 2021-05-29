@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+
 import tripPricer.Provider;
 @RestController
 public class TripPricerController {
@@ -28,8 +30,9 @@ public class TripPricerController {
 	
 	@GetMapping("/getProviderName")
 	public String getProviderName(@RequestParam String apiKey, @RequestParam int adults) {
-		
-		return tripPricerService.getProviderName(apiKey, adults);
+		String provider = tripPricerService.getProviderName(apiKey, adults);
+
+		return new Gson().toJson(provider);
 	}
 
 }

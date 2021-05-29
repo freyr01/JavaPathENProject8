@@ -9,6 +9,8 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gson.JsonObject;
+
 import tripPricer.Provider;
 
 
