@@ -1,4 +1,4 @@
-package tourGuide.proxy;
+package tourGuide.proxy.gpsutil;
 
 public class Location {
 	

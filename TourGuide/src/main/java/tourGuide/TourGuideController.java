@@ -16,7 +16,7 @@ import com.jsoniter.output.JsonStream;
 
 import io.swagger.annotations.ApiOperation;
 import tourGuide.dto.UserPreferencesDTO;
-import tourGuide.proxy.VisitedLocation;
+import tourGuide.proxy.gpsutil.VisitedLocation;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tripPricer.Provider;

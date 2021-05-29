@@ -1,7 +1,7 @@
 package tourGuide.user;
 
-import tourGuide.proxy.Attraction;
-import tourGuide.proxy.VisitedLocation;
+import tourGuide.proxy.gpsutil.Attraction;
+import tourGuide.proxy.gpsutil.VisitedLocation;
 
 public class UserReward {
 
