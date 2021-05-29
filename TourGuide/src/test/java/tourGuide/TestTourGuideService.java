@@ -19,9 +19,9 @@ import rewardCentral.RewardCentral;
 import tourGuide.dto.AttractionDTO;
 import tourGuide.dto.UserLastLocationDTO;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.proxy.Attraction;
-import tourGuide.proxy.GpsUtil;
-import tourGuide.proxy.VisitedLocation;
+import tourGuide.proxy.gpsutil.Attraction;
+import tourGuide.proxy.gpsutil.GpsUtil;
+import tourGuide.proxy.gpsutil.VisitedLocation;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -33,7 +33,7 @@ public class TestTourGuideService {
 	
 	@Before
 	public void init() {
-		gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
+		gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.gpsutil.GpsUtil.class, "http://localhost:8081");
 	}
 
 	@Test

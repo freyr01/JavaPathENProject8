@@ -16,12 +16,11 @@ import org.junit.Test;
 
 import feign.Feign;
 import feign.gson.GsonDecoder;
-import tourGuide.proxy.GpsUtil;
-import tourGuide.proxy.Attraction;
-import tourGuide.proxy.VisitedLocation;
-
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.proxy.gpsutil.Attraction;
+import tourGuide.proxy.gpsutil.GpsUtil;
+import tourGuide.proxy.gpsutil.VisitedLocation;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -51,7 +50,7 @@ public class TestPerformance {
 	
 	@Test
 	public void highVolumeTrackLocation() throws InterruptedException {
-		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.gpsutil.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
 		InternalTestHelper.setInternalUserNumber(100);
@@ -79,7 +78,7 @@ public class TestPerformance {
 	
 	@Test
 	public void highVolumeGetRewards() throws InterruptedException {
-		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.gpsutil.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes

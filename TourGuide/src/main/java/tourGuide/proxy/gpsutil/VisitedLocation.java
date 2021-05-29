@@ -1,4 +1,4 @@
-package tourGuide.proxy;
+package tourGuide.proxy.gpsutil;
 
 import java.util.Date;
 import java.util.UUID;

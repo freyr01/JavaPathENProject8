@@ -16,12 +16,11 @@ import org.junit.Test;
 
 import feign.Feign;
 import feign.gson.GsonDecoder;
-import tourGuide.proxy.GpsUtil;
-import tourGuide.proxy.Attraction;
-import tourGuide.proxy.VisitedLocation;
-
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.proxy.gpsutil.Attraction;
+import tourGuide.proxy.gpsutil.GpsUtil;
+import tourGuide.proxy.gpsutil.VisitedLocation;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -31,7 +30,7 @@ public class TestRewardsService {
 
 	@Test
 	public void userGetRewards() throws InterruptedException, ExecutionException {
-		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.gpsutil.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		InternalTestHelper.setInternalUserNumber(1);
@@ -60,7 +59,7 @@ public class TestRewardsService {
 	
 	@Test
 	public void isWithinAttractionProximity() {
-		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.gpsutil.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
@@ -69,7 +68,7 @@ public class TestRewardsService {
 	//@Ignore // Needs fixed - can throw ConcurrentModificationException
 	@Test
 	public void nearAllAttractions() throws InterruptedException {
-		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.gpsutil.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
 
