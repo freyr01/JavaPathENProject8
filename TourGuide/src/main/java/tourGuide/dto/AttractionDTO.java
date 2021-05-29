@@ -1,6 +1,6 @@
 package tourGuide.dto;
 
-import gpsUtil.location.Location;
+import tourGuide.proxy.Location;
 
 public class AttractionDTO {
 	

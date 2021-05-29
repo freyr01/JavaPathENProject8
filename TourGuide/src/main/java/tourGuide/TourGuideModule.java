@@ -1,13 +1,12 @@
 package tourGuide;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import gpsUtil.GpsUtil;
+import feign.Feign;
+import feign.gson.GsonDecoder;
 import rewardCentral.RewardCentral;
+import tourGuide.proxy.GpsUtil;
 import tourGuide.service.RewardsService;
 
 @Configuration
@@ -15,7 +14,7 @@ public class TourGuideModule {
 	
 	@Bean
 	public GpsUtil getGpsUtil() {
-		return new GpsUtil();
+		return Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
 	}
 	
 	@Bean

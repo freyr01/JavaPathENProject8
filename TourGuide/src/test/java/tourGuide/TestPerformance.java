@@ -14,9 +14,12 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
+import feign.Feign;
+import feign.gson.GsonDecoder;
+import tourGuide.proxy.GpsUtil;
+import tourGuide.proxy.Attraction;
+import tourGuide.proxy.VisitedLocation;
+
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
@@ -48,7 +51,7 @@ public class TestPerformance {
 	
 	@Test
 	public void highVolumeTrackLocation() throws InterruptedException {
-		GpsUtil gpsUtil = new GpsUtil();
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
 		InternalTestHelper.setInternalUserNumber(100);
@@ -76,7 +79,7 @@ public class TestPerformance {
 	
 	@Test
 	public void highVolumeGetRewards() throws InterruptedException {
-		GpsUtil gpsUtil = new GpsUtil();
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes

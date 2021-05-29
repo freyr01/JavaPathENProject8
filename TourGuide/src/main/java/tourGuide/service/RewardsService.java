@@ -8,11 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.proxy.Attraction;
+import tourGuide.proxy.Location;
+import tourGuide.proxy.VisitedLocation;
+
 import rewardCentral.RewardCentral;
+import tourGuide.proxy.GpsUtil;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 

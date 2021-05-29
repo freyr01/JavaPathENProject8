@@ -14,9 +14,12 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
+import feign.Feign;
+import feign.gson.GsonDecoder;
+import tourGuide.proxy.GpsUtil;
+import tourGuide.proxy.Attraction;
+import tourGuide.proxy.VisitedLocation;
+
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
@@ -28,7 +31,7 @@ public class TestRewardsService {
 
 	@Test
 	public void userGetRewards() throws InterruptedException, ExecutionException {
-		GpsUtil gpsUtil = new GpsUtil();
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		InternalTestHelper.setInternalUserNumber(1);
@@ -57,7 +60,7 @@ public class TestRewardsService {
 	
 	@Test
 	public void isWithinAttractionProximity() {
-		GpsUtil gpsUtil = new GpsUtil();
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
@@ -66,7 +69,7 @@ public class TestRewardsService {
 	//@Ignore // Needs fixed - can throw ConcurrentModificationException
 	@Test
 	public void nearAllAttractions() throws InterruptedException {
-		GpsUtil gpsUtil = new GpsUtil();
+		GpsUtil gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
 

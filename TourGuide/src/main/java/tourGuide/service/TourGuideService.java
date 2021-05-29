@@ -23,10 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.proxy.GpsUtil;
+import tourGuide.proxy.Attraction;
+import tourGuide.proxy.Location;
+import tourGuide.proxy.VisitedLocation;
+
 import tourGuide.dto.AttractionDTO;
 import tourGuide.dto.UserLastLocationDTO;
 import tourGuide.helper.InternalTestHelper;

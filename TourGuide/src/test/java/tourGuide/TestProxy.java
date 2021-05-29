@@ -23,7 +23,7 @@ public class TestProxy {
 	@Test
 	public void getUtilProxyGetUserLocationTest_shouldReturnUserLocationUsingProxy() {
 		tourGuide.proxy.GpsUtil gpsUtilProxy = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.GpsUtil.class, "http://localhost:8081");
-        VisitedLocation visitedLocation = gpsUtilProxy.getUserLocation(UUID.randomUUID().toString());
+        VisitedLocation visitedLocation = gpsUtilProxy.getUserLocation(UUID.randomUUID());
         
         assertNotNull(visitedLocation.location);
 	}

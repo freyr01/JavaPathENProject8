@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jsoniter.output.JsonStream;
 
-import gpsUtil.location.VisitedLocation;
 import io.swagger.annotations.ApiOperation;
 import tourGuide.dto.UserPreferencesDTO;
+import tourGuide.proxy.VisitedLocation;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tripPricer.Provider;
