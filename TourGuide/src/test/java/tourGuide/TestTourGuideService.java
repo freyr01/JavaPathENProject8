@@ -15,13 +15,13 @@ import org.junit.Test;
 
 import feign.Feign;
 import feign.gson.GsonDecoder;
-import rewardCentral.RewardCentral;
 import tourGuide.dto.AttractionDTO;
 import tourGuide.dto.UserLastLocationDTO;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.proxy.gpsutil.Attraction;
 import tourGuide.proxy.gpsutil.GpsUtil;
 import tourGuide.proxy.gpsutil.VisitedLocation;
+import tourGuide.proxy.rewardcentral.RewardCentral;
 import tourGuide.proxy.trippricer.Provider;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -29,16 +29,18 @@ import tourGuide.user.User;
 
 public class TestTourGuideService {
 	
-	GpsUtil gpsUtil;
+	private GpsUtil gpsUtil;
+	private RewardCentral rewardCentral;
 	
 	@Before
 	public void init() {
 		gpsUtil = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.gpsutil.GpsUtil.class, "http://localhost:8081");
+		rewardCentral = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.rewardcentral.RewardCentral.class, "http://localhost:8083");
 	}
 
 	@Test
 	public void getUserLocation() throws InterruptedException, ExecutionException {
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, rewardCentral);
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
@@ -50,7 +52,7 @@ public class TestTourGuideService {
 	
 	@Test
 	public void addUser() {
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, rewardCentral);
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
@@ -71,7 +73,7 @@ public class TestTourGuideService {
 	
 	@Test
 	public void getAllUsers() {
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, rewardCentral);
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
@@ -91,7 +93,7 @@ public class TestTourGuideService {
 	
 	@Test
 	public void trackUser() throws InterruptedException, ExecutionException {
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, rewardCentral);
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
@@ -105,7 +107,7 @@ public class TestTourGuideService {
 	
 	@Test
 	public void getAllUserVisitedLocationTest_shouldReturnListOfDto() throws InterruptedException, ExecutionException {
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, rewardCentral);
 		InternalTestHelper.setInternalUserNumber(10);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
@@ -120,7 +122,7 @@ public class TestTourGuideService {
 	
 	@Test
 	public void getClosestAttractions_shouldReturn5ClosestAttractionSortedByProximity() throws InterruptedException, ExecutionException {
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, rewardCentral);
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
@@ -146,7 +148,7 @@ public class TestTourGuideService {
 	
 	@Test
 	public void mapClosestAttractionsToDTOTest_shouldReturnCorreclyFilledDTOlist() throws InterruptedException, ExecutionException {
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, rewardCentral);
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		
@@ -167,7 +169,7 @@ public class TestTourGuideService {
 	}
 	
 	public void getTripDeals() {
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsUtil, rewardCentral);
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 		

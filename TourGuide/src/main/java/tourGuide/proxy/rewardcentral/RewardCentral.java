@@ -8,6 +8,6 @@ import feign.RequestLine;
 public interface RewardCentral {
 	
 	@RequestLine("GET /getAttractionRewardPoints?attractionId={attractionId}&userId={userId}")
-	public String getAttractionRewardPoints(@Param("attractionId") UUID attractionId, @Param("userId") UUID userId);
+	public int getAttractionRewardPoints(@Param("attractionId") UUID attractionId, @Param("userId") UUID userId);
 	
 }

@@ -1,5 +1,6 @@
 package tourGuide;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class TestProxyRewardCentral {
 	
 	@Test
 	public void rewardCentralProxyGetAttractionRewardPoints_shouldReturnAnAttractionRewardPointsAsJsonString() {
-		assertNotNull(rewardCentral.getAttractionRewardPoints(UUID.randomUUID(), UUID.randomUUID()));
+		assertNotEquals(0, rewardCentral.getAttractionRewardPoints(UUID.randomUUID(), UUID.randomUUID()));
 	}
 
 }

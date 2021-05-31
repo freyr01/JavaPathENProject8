@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 
 import feign.Feign;
 import feign.gson.GsonDecoder;
-import rewardCentral.RewardCentral;
 import tourGuide.proxy.gpsutil.GpsUtil;
+import tourGuide.proxy.rewardcentral.RewardCentral;
 import tourGuide.service.RewardsService;
 
 @Configuration
@@ -24,7 +24,7 @@ public class TourGuideModule {
 	
 	@Bean
 	public RewardCentral getRewardCentral() {
-		return new RewardCentral();
+		return Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.rewardcentral.RewardCentral.class, "http://localhost:8083");
 	}
 	
 }
