@@ -22,10 +22,10 @@ import tourGuide.helper.InternalTestHelper;
 import tourGuide.proxy.gpsutil.Attraction;
 import tourGuide.proxy.gpsutil.GpsUtil;
 import tourGuide.proxy.gpsutil.VisitedLocation;
+import tourGuide.proxy.trippricer.Provider;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
-import tripPricer.Provider;
 
 public class TestTourGuideService {
 	

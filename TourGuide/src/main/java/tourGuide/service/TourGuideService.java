@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import feign.Feign;
+import feign.gson.GsonDecoder;
 import tourGuide.dto.AttractionDTO;
 import tourGuide.dto.UserLastLocationDTO;
 import tourGuide.helper.InternalTestHelper;
@@ -30,18 +32,17 @@ import tourGuide.proxy.gpsutil.Attraction;
 import tourGuide.proxy.gpsutil.GpsUtil;
 import tourGuide.proxy.gpsutil.Location;
 import tourGuide.proxy.gpsutil.VisitedLocation;
+import tourGuide.proxy.trippricer.*;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
-import tripPricer.Provider;
-import tripPricer.TripPricer;
 
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer = new TripPricer();
+	private final TripPricer tripPricer = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.trippricer.TripPricer.class, "http://localhost:8082");
 	public final Tracker tracker;
 	boolean testMode = true;
 	private final ExecutorService executorService = Executors.newFixedThreadPool(10000);

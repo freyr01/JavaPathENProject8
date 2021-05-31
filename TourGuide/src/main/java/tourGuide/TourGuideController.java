@@ -17,9 +17,9 @@ import com.jsoniter.output.JsonStream;
 import io.swagger.annotations.ApiOperation;
 import tourGuide.dto.UserPreferencesDTO;
 import tourGuide.proxy.gpsutil.VisitedLocation;
+import tourGuide.proxy.trippricer.Provider;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
-import tripPricer.Provider;
 
 @RestController
 public class TourGuideController {

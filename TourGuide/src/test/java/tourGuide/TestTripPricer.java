@@ -11,10 +11,12 @@ import java.util.UUID;
 import org.javamoney.moneta.Money;
 import org.junit.Test;
 
+import feign.Feign;
+import feign.gson.GsonDecoder;
+import tourGuide.proxy.trippricer.Provider;
+import tourGuide.proxy.trippricer.TripPricer;
 import tourGuide.user.User;
 import tourGuide.user.UserPreferences;
-import tripPricer.Provider;
-import tripPricer.TripPricer;
 
 public class TestTripPricer {
 	
@@ -41,7 +43,7 @@ public class TestTripPricer {
 	
 	@Test
 	public void tripPricerTest() {
-		final TripPricer tripPricer = new TripPricer();
+		final TripPricer tripPricer = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.trippricer.TripPricer.class, "http://localhost:8082");
 		
 		UserPreferences prefs = new UserPreferences();
 		prefs.setAttractionProximity(10);
