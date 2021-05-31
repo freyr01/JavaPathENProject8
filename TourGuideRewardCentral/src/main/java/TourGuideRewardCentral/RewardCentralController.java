@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -30,7 +31,7 @@ public class RewardCentralController {
 	 * 31 mai 2021
 	 */
 	@GetMapping("/getAttractionRewardPoints")
-	public String getAttractionRewardPoints(UUID attractionId, UUID userId) {
+	public String getAttractionRewardPoints(@RequestParam UUID attractionId, @RequestParam UUID userId) {
 		
 		logger.info("GET /getAttractionRewardPoints with param; attractionId: {}, userId: {}", attractionId, userId);
 		
