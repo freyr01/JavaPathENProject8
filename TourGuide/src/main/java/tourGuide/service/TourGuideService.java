@@ -42,12 +42,16 @@ public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.trippricer.TripPricer.class, "http://localhost:8082");
+	private final TripPricer tripPricer;
 	public final Tracker tracker;
 	boolean testMode = true;
 	private final ExecutorService executorService = Executors.newFixedThreadPool(10000);
 	
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
+		this.tripPricer = Feign.builder()
+				.decoder(new GsonDecoder())
+				.target(tourGuide.proxy.trippricer.TripPricer.class, "http://localhost:8082");
+		
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
 		
@@ -108,6 +112,7 @@ public class TourGuideService {
 	
 	public Future<VisitedLocation> trackUserLocation(User user) {
 		logger.debug("Creating parallel task getUserLocation for user: " + user);
+		//Creating parallel task getUserLocation 
 		Future<VisitedLocation> future = executorService.submit(() -> {
 			VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 			logger.debug("Getting userLocation: " + visitedLocation);
