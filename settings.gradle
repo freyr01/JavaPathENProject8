@@ -1,0 +1,4 @@
+include 'TourGuide'
+include 'TourGuideGpsUtils'
+include 'TourGuideRewardCentral'
+include 'TourGuideTripPricer'
