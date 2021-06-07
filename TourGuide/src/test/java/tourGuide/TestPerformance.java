@@ -25,6 +25,8 @@ import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
+@Ignore
+//Can be used only if GpsUtils and RewardCentral microservices are UP
 public class TestPerformance {
 	
 	/*

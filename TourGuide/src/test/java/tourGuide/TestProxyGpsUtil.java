@@ -5,12 +5,15 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.UUID;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import feign.Feign;
 import feign.gson.GsonDecoder;
 import tourGuide.proxy.gpsutil.VisitedLocation;
 
+@Ignore
+//Can only be used when GpsUtil microservice is UP
 public class TestProxyGpsUtil {
 	
 	@Test

@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import feign.Feign;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 
+@Ignore
+//Can only be used when TripPricer microservice is UP
 public class TestProxyTripPricer {
 	
 	private tourGuide.proxy.trippricer.TripPricer tripPricer;
