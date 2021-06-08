@@ -35,14 +35,14 @@ public class TourGuideController {
         return "Greetings from TourGuide!";
     }
     
-	@ApiOperation(value = "Get the location of a specific user")
+	@ApiOperation(value = "Get the location (latitude and longitude) of a specific user as Json format")
     @GetMapping("/getLocation") 
     public String getLocation(@RequestParam String userName) {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
 		return JsonStream.serialize(visitedLocation.location);
     }
 
-	@ApiOperation(value = "Get the five closest attractions from the user current location")
+	@ApiOperation(value = "Get the five closest attractions from the user current location as Json format")
     @GetMapping("/getNearbyAttractions") 
     /**
      * Return 5 closest attractions based on last visited location of the user as Json
@@ -54,13 +54,13 @@ public class TourGuideController {
     	return JsonStream.serialize(tourGuideService.mapClosestAttractionsToDTO(getUser(userName), 5));
     }
     
-	@ApiOperation(value = "Get the rewards list of a specific user")
+	@ApiOperation(value = "Get the rewards list of a specific user as Json format")
     @GetMapping("/getRewards") 
     public String getRewards(@RequestParam String userName) {
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
     }
     
-	@ApiOperation(value = "Get all users current location")
+	@ApiOperation(value = "Get all users current location as Json format")
     @GetMapping("/getAllCurrentLocations")
     /**
      * Return all users last location registed as Json
@@ -71,7 +71,7 @@ public class TourGuideController {
     	return JsonStream.serialize(tourGuideService.getAllUserLastVisitedLocation());
     }
     
-	@ApiOperation(value = "Get the list of trip deals of a specific user")
+	@ApiOperation(value = "Get the list of trip deals of a specific user as Json format")
     @GetMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
