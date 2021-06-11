@@ -42,7 +42,7 @@ public class TestTripPricer {
 	}
 	
 	@Test
-	public void tripPricerTest() {
+	public void tripPricerTest_shouldReturnSomeOffers() {
 		final TripPricer tripPricer = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.trippricer.TripPricer.class, "http://localhost:8082");
 		
 		UserPreferences prefs = new UserPreferences();
@@ -50,25 +50,17 @@ public class TestTripPricer {
 		prefs.setHighPricePoint(Money.of(BigDecimal.valueOf(100d), "EUR"));
 		prefs.setLowerPricePoint(Money.of(BigDecimal.valueOf(20.05), "EUR"));
 		prefs.setNumberOfAdults(2);
-	
+		prefs.setNumberOfChildren(3);
 		prefs.setTicketQuantity(5);
 		prefs.setTripDuration(14);
 		
 		User user = new User(UUID.randomUUID(), "test", "0000", "test@test.com");
 		user.setUserPreferences(prefs);
 		
-		for(int i = 0; i < 5; i++) {
-			prefs.setNumberOfChildren(i);
-			List<Provider> providers = tripPricer.getPrice("", user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
-					user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), 10);
-			
-			System.out.printf("Provider list with pref: %d children\n\n", prefs.getNumberOfChildren());
-			for(Provider provider : providers) {
-				System.out.println(provider.name + ": " + provider.price);
-
-			}
-			System.out.println();
-		}
+		List<Provider> providers = tripPricer.getPrice("", user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
+				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), 10);
+		
+		assertEquals(5, providers.size());
 	}
 
 }
