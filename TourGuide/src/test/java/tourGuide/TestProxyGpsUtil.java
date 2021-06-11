@@ -12,7 +12,6 @@ import feign.Feign;
 import feign.gson.GsonDecoder;
 import tourGuide.proxy.gpsutil.VisitedLocation;
 
-@Ignore
 //Can only be used when GpsUtil microservice is UP
 public class TestProxyGpsUtil {
 	

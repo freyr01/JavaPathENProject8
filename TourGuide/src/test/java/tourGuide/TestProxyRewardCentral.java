@@ -13,7 +13,6 @@ import feign.Feign;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 
-@Ignore
 //Can only be used when RewardCentral microservice is UP
 public class TestProxyRewardCentral {
 	

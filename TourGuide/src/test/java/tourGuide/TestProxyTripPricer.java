@@ -14,7 +14,6 @@ import feign.Feign;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 
-@Ignore
 //Can only be used when TripPricer microservice is UP
 public class TestProxyTripPricer {
 	

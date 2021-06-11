@@ -1,4 +1,4 @@
-
 include 'TourGuideGpsUtils'
 include 'TourGuideRewardCentral'
 include 'TourGuideTripPricer'
+include 'TourGuide'
