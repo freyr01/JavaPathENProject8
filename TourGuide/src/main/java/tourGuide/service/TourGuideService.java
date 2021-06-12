@@ -21,6 +21,8 @@ import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import feign.Feign;
@@ -42,16 +44,15 @@ public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer;
+
+	@Autowired
+	private TripPricer tripPricer;
+	
 	public final Tracker tracker;
 	boolean testMode = true;
 	private final ExecutorService executorService = Executors.newFixedThreadPool(10000);
 	
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
-		this.tripPricer = Feign.builder()
-				.decoder(new GsonDecoder())
-				.target(tourGuide.proxy.trippricer.TripPricer.class, "http://localhost:8082");
-		
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
 		
