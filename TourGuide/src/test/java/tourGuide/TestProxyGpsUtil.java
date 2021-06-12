@@ -19,7 +19,7 @@ public class TestProxyGpsUtil {
 	public void gpsUtilProxyGetAttractionTest_shouldReturnAttractionsListUsingProxy() {
 		tourGuide.proxy.gpsutil.GpsUtil gpsUtilProxy = Feign.builder()
 				.decoder(new GsonDecoder())
-				.target(tourGuide.proxy.gpsutil.GpsUtil.class, "http://localhost:8081");
+				.target(tourGuide.proxy.gpsutil.GpsUtil.class, TestProperties.gpsUtilSocket);
 		
 		assertEquals(26, gpsUtilProxy.getAttractions().size());
 	}
@@ -28,7 +28,7 @@ public class TestProxyGpsUtil {
 	public void getUtilProxyGetUserLocationTest_shouldReturnUserLocationUsingProxy() {
 		tourGuide.proxy.gpsutil.GpsUtil gpsUtilProxy = Feign.builder()
 				.decoder(new GsonDecoder())
-				.target(tourGuide.proxy.gpsutil.GpsUtil.class, "http://localhost:8081");
+				.target(tourGuide.proxy.gpsutil.GpsUtil.class, TestProperties.gpsUtilSocket);
 		
         VisitedLocation visitedLocation = gpsUtilProxy.getUserLocation(UUID.randomUUID());
         

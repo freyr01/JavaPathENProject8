@@ -28,3 +28,11 @@ subprojects {
     }
 
 }
+
+task prepareTest{
+	dependsOn ':TourGuideGpsUtils:runDocker', ':TourGuideTripPricer:runDocker', ':TourGuideRewardCentral:runDocker'
+}
+
+task cleanTest {
+	dependsOn ':TourGuideGpsUtils:stopDocker', ':TourGuideTripPricer:stopDocker', ':TourGuideRewardCentral:stopDocker'
+}

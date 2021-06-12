@@ -43,7 +43,7 @@ public class TestTripPricer {
 	
 	@Test
 	public void tripPricerTest_shouldReturnSomeOffers() {
-		final TripPricer tripPricer = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.trippricer.TripPricer.class, "http://localhost:8082");
+		final TripPricer tripPricer = Feign.builder().decoder(new GsonDecoder()).target(tourGuide.proxy.trippricer.TripPricer.class, TestProperties.tripPricerSocket);
 		
 		UserPreferences prefs = new UserPreferences();
 		prefs.setAttractionProximity(10);

@@ -24,7 +24,7 @@ public class TestProxyRewardCentral {
 		rewardCentral = Feign.builder()
 				.encoder(new GsonEncoder())
 				.decoder(new GsonDecoder())
-				.target(tourGuide.proxy.rewardcentral.RewardCentral.class, "http://localhost:8083");
+				.target(tourGuide.proxy.rewardcentral.RewardCentral.class, TestProperties.rewardCentralSocket);
 	}
 	
 	@Test

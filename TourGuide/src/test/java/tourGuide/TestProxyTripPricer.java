@@ -24,7 +24,7 @@ public class TestProxyTripPricer {
 		tripPricer = Feign.builder()
 				.encoder(new GsonEncoder())
 				.decoder(new GsonDecoder())
-				.target(tourGuide.proxy.trippricer.TripPricer.class, "http://localhost:8082");
+				.target(tourGuide.proxy.trippricer.TripPricer.class, TestProperties.tripPricerSocket);
 	}
 	
 	@Test
