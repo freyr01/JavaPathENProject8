@@ -3,6 +3,8 @@ plugins {
     id "io.spring.dependency-management" version "1.0.8.RELEASE"
 }
 
+def projectName = 'TourGuide'
+
 subprojects {
 
     group = 'io.reflectoring.reviewapp'
@@ -26,13 +28,44 @@ subprojects {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+	
+	// CUSTOM DOCKER TASKS
+	task buildDocker (type: Exec) {
+		dependsOn "bootJar" 
+		group = "Docker"
+		description = "Build the docker image"
+		commandLine "docker", "build", "--build-arg", "JAR_FILE=build/libs/*.jar", "-t", "tourguide/" + project.name.toLowerCase(), "."
+	}
 
+	task cleanDocker (type: Exec) {
+		group = "Docker"
+		ignoreExitValue = "true"
+		description = "Delete the docker container"
+		commandLine "docker", "rmi", "-f", "tourguide/" + project.name.toLowerCase()
+	}
 }
 
 task prepareTest{
 	dependsOn ':TourGuideGpsUtils:runDocker', ':TourGuideTripPricer:runDocker', ':TourGuideRewardCentral:runDocker'
+	group = "Verification"
+	description = "Prepare Docker microservices env to execute TourGuide tests"
+	
 }
 
 task cleanTest {
 	dependsOn ':TourGuideGpsUtils:stopDocker', ':TourGuideTripPricer:stopDocker', ':TourGuideRewardCentral:stopDocker'
+	group = "Verification"
+	description = "Clean Docker microservices env"
+}
+
+task runDocker (type: Exec){
+	group = "Docker"
+	commandLine "docker" ,"compose", "-p", projectName, "up", "-d"
+}
+
+task stopDocker (type: Exec) {
+	group = "Docker"
+	description = "Stop the docker container"
+	ignoreExitValue = "true"
+	commandLine "docker", "compose", "-p", projectName, "down"
 }

@@ -49,51 +49,7 @@ dependencies {
 	implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.0'
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-	
-	
 }
-
-// CUSTOM DOCKER TASKS CONFIG
-def dockerPort = '8080'
-
-// CUSTOM DOCKER TASKS
-task stopDockerContainer (type: Exec) {
-    group = "Docker"
-    description = "Stop the docker container"
-    ignoreExitValue = "true"
-    commandLine "docker", "stop", project.name
-}
-
-task cleanDockerContainer (type: Exec) {
-	dependsOn stopDockerContainer
-    group = "Docker"
-    ignoreExitValue = "true"
-    description = "Delete the docker container"
-    commandLine "docker", "rm", project.name, "-f"
-}
-
-task stopDocker (type: Exec) {
-	dependsOn cleanDockerContainer
-    group = "Docker"
-    ignoreExitValue = "true"
-    description = "Stop and clean this docker app"
-    commandLine "docker", "rmi", "tourguide/" + project.name.toLowerCase()
-}
-
-task buildDocker (type: Exec) {
-    dependsOn "bootJar" 
-    group = "Docker"
-    description = "Build the docker image"
-    commandLine "docker", "build", "--build-arg", "JAR_FILE=build/libs/*.jar", "-t", "tourguide/" + project.name.toLowerCase(), "."
-}
-
-task runDocker (type: Exec) {
-    dependsOn buildDocker
-    group = "Docker"
-    description = "Create a container and run it"
-    commandLine "docker", "run", "--name", project.name, "-d", "-p", dockerPort + ":8080", "tourguide/" + project.name.toLowerCase()
-}
-
 
 jacoco {
     toolVersion = "0.8.4"
