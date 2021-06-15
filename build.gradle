@@ -72,3 +72,8 @@ task stopDocker (type: Exec) {
 	ignoreExitValue = "true"
 	commandLine "docker", "compose", "-p", projectName, "down"
 }
+
+def tourGuide = subprojects.findAll { project -> project.name == 'TourGuide'}
+
+tourGuide[0].test.dependsOn prepareTest
+tourGuide[0].test.finalizedBy cleanTest
