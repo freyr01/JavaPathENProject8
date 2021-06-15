@@ -63,6 +63,8 @@ jacocoTestReport {
     }
 }
 
+test.dependsOn rootProject.prepareTest
+test.finalizedBy rootProject.cleanTest
 test.finalizedBy jacocoTestReport
 check.dependsOn jacocoTestCoverageVerification
 

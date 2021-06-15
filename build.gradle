@@ -45,25 +45,28 @@ subprojects {
 	}
 }
 
-task prepareTest{
-	dependsOn ':TourGuideGpsUtils:runDocker', ':TourGuideTripPricer:runDocker', ':TourGuideRewardCentral:runDocker'
+task prepareTest (type: Exec) {
+	dependsOn ':TourGuideGpsUtils:buildDocker', ':TourGuideTripPricer:buildDocker', ':TourGuideRewardCentral:buildDocker'
 	group = "Verification"
 	description = "Prepare Docker microservices env to execute TourGuide tests"
-	
+	commandLine "docker" ,"compose", "-p", projectName + "Test", "-f", "docker-compose-test.yml", "up", "-d"
 }
 
-task cleanTest {
-	dependsOn ':TourGuideGpsUtils:stopDocker', ':TourGuideTripPricer:stopDocker', ':TourGuideRewardCentral:stopDocker'
+task cleanTest (type: Exec) {
+	finalizedBy ':TourGuideGpsUtils:cleanDocker', ':TourGuideTripPricer:cleanDocker', ':TourGuideRewardCentral:cleanDocker'
 	group = "Verification"
 	description = "Clean Docker microservices env"
+	commandLine "docker" ,"compose", "-p", projectName + "Test", "-f", "docker-compose-test.yml", "down"
 }
 
 task runDocker (type: Exec){
+	dependsOn ':TourGuideGpsUtils:buildDocker', ':TourGuideTripPricer:buildDocker', ':TourGuideRewardCentral:buildDocker', ':TourGuide:buildDocker'
 	group = "Docker"
 	commandLine "docker" ,"compose", "-p", projectName, "up", "-d"
 }
 
 task stopDocker (type: Exec) {
+	finalizedBy ':TourGuideGpsUtils:cleanDocker', ':TourGuideTripPricer:cleanDocker', ':TourGuideRewardCentral:cleanDocker', ':TourGuide:cleanDocker'
 	group = "Docker"
 	description = "Stop the docker container"
 	ignoreExitValue = "true"
